@@ -424,7 +424,14 @@ async function loadAll(){
   document.getElementById('stxt').textContent='Caricamento...';
   try{
     const res=await fetch(`${API}?action=getTutto&utente=${UID}`,{redirect:'follow'});
+
+
+
     DB=await res.json();
+console.log('DB.calendario lunghezza:', (DB.calendario||[]).length);
+console.log('DB keys:', Object.keys(DB));
+
+    
     renderConfig(DB.config||{});
     renderCal(DB.calendario||[]);
     renderPiante(DB.piante||[]);
