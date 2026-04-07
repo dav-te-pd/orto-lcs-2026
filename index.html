@@ -425,16 +425,16 @@ async function loadAll(){
   try{
     const res=await fetch(`${API}?action=getTutto&utente=${UID}`,{redirect:'follow'});
     DB=await res.json();
-    renderConfig();
-    renderCal();
+    renderConfig(DB.config||{});
+    renderCal(DB.calendario||[]);
     renderPiante(DB.piante||[]);
     renderAcq(DB.acquisti||[]);
-    renderMal();
-    renderSc();
+    renderMal(DB.malattie||[]);
+    renderSc(DB.scarti||[]);
     renderLib(DB.libro||[]);
-    renderRegole();
-    renderMeteo();
-    renderTodo();
+    renderRegole(DB.regole||[]);
+    renderMeteo(DB.meteo||[]);
+    renderTodo(DB.todo||[]);
     popolaRegistroForm();
     document.getElementById('sdot').style.background='var(--accent)';
     document.getElementById('stxt').textContent='Connesso';
@@ -454,8 +454,8 @@ async function post(data){
   return res.json();
 }
 
-function renderConfig(){
-  const c=DB.config||{};
+function renderConfig(c){
+  c=c||{};
   document.getElementById('hsub').textContent=`${c.utente_nome||'Davide'} — ${c.zona||''} — ${c.dimensioni_orto||''} — ${c.metodo||'LCS'}`;
 }
 
@@ -639,8 +639,8 @@ async function segnaAcq(id,el){
 }
 
 // ===== MALATTIE =====
-function renderMal(){
-  const d=DB.malattie||[];
+function renderMal(d){
+  d=d||DB.malattie||[];
   document.getElementById('mal-grid').innerHTML=d.map(m=>`
     <div class="mal-card">
       <div class="mal-name">${m.Nome||''} <span style="font-size:10px;color:var(--text3);font-weight:400">— ${m.Gravità||''}</span></div>
@@ -653,8 +653,8 @@ function renderMal(){
 }
 
 // ===== SCARTI =====
-function renderSc(){
-  const d=DB.scarti||[];
+function renderSc(d){
+  d=d||DB.scarti||[];
   document.getElementById('sc-grid').innerHTML=d.map(s=>`
     <div class="sc-card">
       <div class="sc-name">${s.Scarto||''}</div>
@@ -689,8 +689,8 @@ function fLib(f,btn){
 }
 
 // ===== REGOLE =====
-function renderRegole(){
-  const d=DB.regole||[];
+function renderRegole(d){
+  d=d||DB.regole||[];
   document.getElementById('r-cnt').textContent=`— ${d.length} regole`;
   document.getElementById('reg-grid').innerHTML=d.map(r=>`
     <div class="regola-card">
@@ -702,8 +702,8 @@ function renderRegole(){
 }
 
 // ===== METEO =====
-function renderMeteo(){
-  const d=DB.meteo||[];
+function renderMeteo(d){
+  d=d||DB.meteo||[];
   const tb=document.getElementById('m-body');
   if(!d.length){tb.innerHTML='<tr class="empty-row"><td colspan="7">Nessun dato meteo</td></tr>';return;}
   tb.innerHTML=d.map(m=>`
@@ -726,8 +726,8 @@ async function salvaMeteo(){
 }
 
 // ===== TODO =====
-function renderTodo(){
-  const d=DB.todo||[];
+function renderTodo(d){
+  d=d||DB.todo||[];
   document.getElementById('t-cnt').textContent=`— ${d.filter(t=>t.Fatto!=='SI').length} aperti`;
   const tb=document.getElementById('t-body');
   if(!d.length){tb.innerHTML='<tr class="empty-row"><td colspan="7">Nessun TODO</td></tr>';return;}
